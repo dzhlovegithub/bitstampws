@@ -1,0 +1,2 @@
+# bitstampws
+bitstamp websocket client
