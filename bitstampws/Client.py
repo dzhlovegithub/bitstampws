@@ -45,7 +45,7 @@ class _Client:
             self._conn.write_message(json.dumps({
                 'event': 'pusher:subscribe',
                 'data': {
-                    'channel': "%s_%s" % o if book else "%s" % self.channel
+                    'channel': "%s_%s" % o if self.book else "%s" % self.channel
                 }
             }))
         except:
