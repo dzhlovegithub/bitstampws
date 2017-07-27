@@ -66,6 +66,7 @@ class _Client:
                 else:
                     if self.channel.startswith('live_trades'):
                         o = self.type(time(), self.book, **json.loads(msg))
+                        logger.info(o)
                         self.publisher.notify(o)
             except:
                 logger.exception("failed on listen")
