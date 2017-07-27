@@ -19,6 +19,19 @@ class _Client:
         self._conn = None
         self._url = 'wss://ws.pusherapp.com/app/de504dc5763aeef9ff52?protocol=7'
 
+    @property
+    def type(self):
+        if self.channel.startswith('live_trades'):
+            return Trade
+        elif self.channel.startswith('order_book'):
+            return OrderBook
+        elif self.channel.startswith('diff_order_book'):
+            return DiffOrderBook
+        elif self.channel.startswith('live_orders'):
+            return Order
+        else:
+            raise NotImplementedError('unknown channel')
+
     @tornado.gen.coroutine
     def connect(self):
         try:
@@ -49,17 +62,8 @@ class _Client:
                     break
                 else:
                     if self.channel.startswith('live_trades'):
-                        o = Trade(time(), self.book, **json.loads(msg))
+                        o = self.type(time(), self.book, **json.loads(msg))
                         self.publisher.notify(o)
-                    elif self.channel.startswith('order_book'):
-                        # self.publisher.notify(OrderBook())
-                        pass
-                    elif self.channel.startswith('diff_order_book'):
-                        # self.publisher.notify(DiffOrderBook())
-                        pass
-                    elif self.channel.startswith('live_orders'):
-                        # self.publisher.notify(Order())
-                        pass
             except:
                 logger.exception("failed on listen")
                 raise
