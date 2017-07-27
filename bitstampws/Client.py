@@ -49,7 +49,7 @@ class _Client:
                 }
             }))
         except:
-            logger.exception("failed to connect")
+            logger.exception("failed to connect (%s,%s)" % (self.book, self.channel))
         else:
             logger.info("connected")
             self.listen()
