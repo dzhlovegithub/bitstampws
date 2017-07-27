@@ -10,6 +10,9 @@ from .models import (
 )
 
 
+logger = logging.getLogger('bitstampws')
+
+
 class _Client:
 
     def __init__(self, publisher, channel, book=None):
