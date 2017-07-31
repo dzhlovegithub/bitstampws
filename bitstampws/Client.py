@@ -2,12 +2,11 @@ import json
 import logging
 import tornado.gen
 import tornado.websocket
+from datetime import datetime
 from dppy.behavioral import pubsub
 from time import time
 
-from .models import (
-    DiffOrderBook, Order, OrderBook, Trade
-)
+from .models import Stream
 
 
 logger = logging.getLogger('bitstampws')
@@ -15,44 +14,31 @@ logger = logging.getLogger('bitstampws')
 
 class _Client:
 
-    def __init__(self, publisher, channel, book=None):
+    def __init__(self, publisher):
         self.publisher = publisher
-        self.channel = channel
-        self.book = book
         self._conn = None
         self._url = 'wss://ws.pusherapp.com/app/de504dc5763aeef9ff52?protocol=7'
-
-    @property
-    def type(self):
-        if self.channel.startswith('live_trades'):
-            return Trade
-        elif self.channel.startswith('order_book'):
-            return OrderBook
-        elif self.channel.startswith('diff_order_book'):
-            return DiffOrderBook
-        elif self.channel.startswith('live_orders'):
-            return Order
-        else:
-            raise NotImplementedError('unknown channel')
 
     @tornado.gen.coroutine
     def connect(self):
         try:
-            o = (self.channel, self.book or 'btcusd')
-            logger.info("subscribing(channel=%s, book=%s)" % o)
             websocket_connect = tornado.websocket.websocket_connect
             self._conn = yield websocket_connect(self._url)
-            self._conn.write_message(json.dumps({
-                'event': 'pusher:subscribe',
-                'data': {
-                    'channel': "%s_%s" % o if self.book else "%s" % self.channel
-                }
-            }))
         except:
-            logger.exception("failed to connect (%s,%s)" % (self.book, self.channel))
+            logger.exception("failed to connect")
         else:
             logger.info("connected")
             self.listen()
+
+    def subscribe(self, channel, book=None):
+        o = (channel, book or 'btcusd')
+        logger.info("subscribing(channel=%s, book=%s)" % o)
+        self._conn.write_message(json.dumps({
+            'event': 'pusher:subscribe',
+            'data': {
+                'channel': "%s_%s" % o if book else "%s" % channel
+            }
+        }))
 
     @tornado.gen.coroutine
     def listen(self):
@@ -64,10 +50,17 @@ class _Client:
                     self._conn = None
                     break
                 else:
-                    if self.channel.startswith('live_trades'):
-                        o = self.type(time(), self.book, **json.loads(msg))
-                        logger.info(o)
-                        self.publisher.notify(o)
+                    payload = json.loads(msg)
+                    if 'channel' in payload:
+                        timestamp = time()
+                        params = {
+                            'timestamp': timestamp,
+                            'datetime': datetime.fromtimestamp(timestamp),
+                            'payload': payload
+                        }
+                        self.publisher.notify(Stream(**params))
+                    else:
+                        logger.info(payload)
             except:
                 logger.exception("failed on listen")
                 raise
@@ -76,7 +69,7 @@ class _Client:
 class Client(pubsub.AbsPublisher):
 
     def __init__(self):
-        self._clients = {}
+        self._client = None
 
     @property
     def channels(self):
@@ -90,11 +83,11 @@ class Client(pubsub.AbsPublisher):
             'btceur', 'eurusd', 'xrpusd', 'xrpeur', 'xrpbtc', 'ltcusd', 'ltceur', 'ltcbtc'
         ]
 
+    @tornado.gen.coroutine
     def connect(self):
+        self._client = _Client(self)
+        yield self._client.connect()
         for channel in self.channels:
-            self._clients[(channel,)] = _Client(self, channel)
-            self._clients[(channel,)].connect()
+            self._client.subscribe(channel)
             for book in self.books:
-                self._clients[(channel, book)] = _Client(self, channel, book)
-                self._clients[(channel, book)].connect()
-
+                self._client.subscribe(channel, book)
