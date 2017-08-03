@@ -1,3 +1,5 @@
+import json
+
 from ._BaseModel import BaseModel
 
 
@@ -17,3 +19,4 @@ class Stream(BaseModel):
                 pass
             elif self.event.startswith('live_orders'):
                 pass
+
