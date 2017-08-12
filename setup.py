@@ -13,7 +13,7 @@ setup(
         , 'tornado'
     ]
     , dependency_links=[
-        'https://github.com/oxsoftdev/design-patterns-py/tarball/master'
+        'https://github.com/oxsoftdev/design-patterns-py/tarball/master#egg=dppy-0.1'
     ]
 )
 
