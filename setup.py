@@ -8,7 +8,10 @@ setup(
     , packages=find_packages()
     , url='https://github.com/oxsoftdev/bitstampws'
     , license='LICENSE.txt'
-    , install_requires=['tornado']
+    , install_requires=[
+        'dppy'
+        , 'tornado'
+    ]
     , dependency_links=[
         'https://github.com/oxsoftdev/design-patterns-py/tarball/master'
     ]
