@@ -51,7 +51,9 @@ class _Client:
                     break
                 else:
                     payload = json.loads(msg)
-                    if 'channel' in payload and 'data' in payload:
+                    if ('channel' in payload and
+                            'data' in payload and
+                            bool(json.loads(payload['data']))):
                         timestamp = time()
                         params = {
                             'timestamp': timestamp,
