@@ -1,7 +1,7 @@
 import json
 
 from ._BaseModel import BaseModel
-from .DiffOrder import DiffOrder
+from .DiffOrderBook import DiffOrderBook
 from .Order import Order
 from .OrderBook import OrderBook
 from .Trade import Trade
