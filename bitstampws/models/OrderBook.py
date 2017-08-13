@@ -30,7 +30,8 @@ class OrderBook(BaseModel):
         return _orders
 
     def __repr__(self):
-        return "OrderBook({num_bids} bids, {num_asks} asks)".format(
+        return "OrderBook(book={book}, {num_bids} bids, {num_asks} asks)".format(
+            book = self.book,
             num_bids = len(self.bids),
             num_asks = len(self.asks)
         )
