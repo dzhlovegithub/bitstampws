@@ -19,7 +19,7 @@ class DiffOrderBook(BaseModel):
 
         for (param, value) in data.items():
             if param == 'timestamp':
-                self.timestamp = int(str(timestamp))
+                self.timestamp = Decimal(str(timestamp))
             elif param == 'bids':
                 self.bids = self._build_difforders_list(value)
             elif param == 'asks':
