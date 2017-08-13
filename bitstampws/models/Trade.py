@@ -1,16 +1,15 @@
 from decimal import Decimal
-from datetime import datetime
 
 from ._BaseModel import BaseModel
 
 
 class Trade(BaseModel):
 
-    def __init__(self, timestamp, book, **kwargs):
+    def __init__(self, timestamp, datetime, book, data):
         self._timestamp = timestamp
-        self._datetime = datetime.fromtimestamp(self._timestamp)
+        self._datetime = datetime
         self.book = book
-        for (param, value) in kwargs.items():
+        for (param, value) in data.items():
             if param == 'id':
                 setattr(self, 'id', value)
             elif param == 'amount':

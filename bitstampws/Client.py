@@ -51,7 +51,7 @@ class _Client:
                     break
                 else:
                     payload = json.loads(msg)
-                    if 'channel' in payload:
+                    if 'channel' in payload and 'data' in payload:
                         timestamp = time()
                         params = {
                             'timestamp': timestamp,
@@ -91,3 +91,4 @@ class Client(pubsub.AbsPublisher):
             self._client.subscribe(channel)
             for book in self.books:
                 self._client.subscribe(channel, book)
+
