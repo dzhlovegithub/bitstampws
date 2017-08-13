@@ -2,6 +2,7 @@ import json
 
 from ._BaseModel import BaseModel
 from .Order import Order
+from .OrderBook import OrderBook
 from .Trade import Trade
 
 
@@ -19,6 +20,7 @@ class Stream(BaseModel):
             self.data = self.build_data_object(data, Trade)
         elif self.channel.startswith('order_book'):
             self.book = self.get_book(2)
+            self.data = self.build_data_object(data, OrderBook)
         elif self.channel.startswith('diff_order_book'):
             self.book = self.get_book(3)
         elif self.channel.startswith('live_orders'):
