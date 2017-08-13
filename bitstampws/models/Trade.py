@@ -11,19 +11,24 @@ class Trade(BaseModel):
         self.book = book
         for (param, value) in data.items():
             if param == 'id':
-                setattr(self, 'id', value)
+                setattr(self, 'id', int(str(value)))
             elif param == 'amount':
-                setattr(self, 'amount', value)
+                setattr(self, 'amount', Decimal(str(value)))
             elif param == 'price':
-                setattr(self, 'price', value)
+                setattr(self, 'price', Decimal(str(value)))
             elif param == 'type':
-                setattr(self, 'type', value)
+                if value == 0:
+                    setattr(self, 'type', 'buy')
+                elif value == 1:
+                    setattr(self, 'type', 'sell')
+                else:
+                    setattr(self, 'type', None)
             elif param == 'timestamp':
-                setattr(self, 'timestamp', value)
+                setattr(self, 'timestamp', int(str(value)))
             elif param == 'buy_order_id':
-                setattr(self, 'buy_order_id', value)
+                setattr(self, 'buy_order_id', int(str(value)))
             elif param == 'sell_order_id':
-                setattr(self, 'sell_order_id', value)
+                setattr(self, 'sell_order_id', int(str(value)))
 
     def __repr__(self):
         return "Trade({Trade})".format(
