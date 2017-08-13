@@ -1,6 +1,7 @@
 import json
 
 from ._BaseModel import BaseModel
+from .Order import Order
 from .Trade import Trade
 
 
@@ -22,6 +23,7 @@ class Stream(BaseModel):
             self.book = self.get_book(3)
         elif self.channel.startswith('live_orders'):
             self.book = self.get_book(2)
+            self.data = self.build_data_object(data, Order)
 
     def get_book(self, length):
         if len(self.channel.split('_')) == (length + 1):
