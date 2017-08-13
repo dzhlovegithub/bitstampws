@@ -29,7 +29,7 @@ class Stream(BaseModel):
         elif len(self.channel.split('_')) == length:
             return 'btcusd'
 
-    def build_data_object(data, type):
+    def build_data_object(self, data, type):
         return type(self._timestamp, self._datetime, self.book, data)
 
     def __repr__(self):
