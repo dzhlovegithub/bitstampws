@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 
 from ._BaseModel import BaseModel
@@ -25,10 +26,10 @@ class Order(BaseModel):
                 else:
                     setattr(self, 'order_type', None)
             elif param == 'datetime':
-                setattr(self, 'datetime', datetime)
+                setattr(self, 'datetime', value)
 
     def __repr__(self):
         return "Order({Order})".format(
-            Order=self._repr('book','id','amount','price','datetime')
+            Order=self._repr('book','id','amount','price')
         )
 
