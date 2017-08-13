@@ -24,7 +24,7 @@ class Stream(BaseModel):
             self.data = self._build_data_object(data, OrderBook)
         elif self.channel.startswith('diff_order_book'):
             self.book = self._get_book(3)
-            self.data = self._build_data_object(data, DiffOrder)
+            self.data = self._build_data_object(data, DiffOrderBook)
         elif self.channel.startswith('live_orders'):
             self.book = self._get_book(2)
             self.data = self._build_data_object(data, Order)
