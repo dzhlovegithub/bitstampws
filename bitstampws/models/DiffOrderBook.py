@@ -5,7 +5,7 @@ from ._BaseModel import BaseModel
 
 class _DiffOrder:
 
-    def __init__(self), amount, price):
+    def __init__(self, amount, price):
         self.amount = Decimal(str(amount))
         self.price = Decimal(str(price))
 
